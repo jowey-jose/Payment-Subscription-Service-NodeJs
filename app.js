@@ -9,7 +9,7 @@ const UserService = require('./api/user')
 const Stripe = require('./api/connections/stripePaymentIntegration') // Initialize Stripe Integration
 const setLoggedInUser = require('./api/middleware/setLoggedInUser')
 const hasPaymentPlan = require('./api/middleware/hasPaymentPlan') // Check Payment Plan Associated with User.
-const routes = require('./api/route/userRoute')
+// const routes = require('./api/route/userRouteJwt') // JWT Auth
 
 const app = express();
 
@@ -42,18 +42,18 @@ const productToPriceMap = {
 }
 
 // Routes
-routes(app)
+// routes(app)
 
-app.use(function(req, res) {
-  res.status(404).send({ url: req.originalUrl + ' not found' })
-});
+// app.use(function(req, res) {
+//   res.status(404).send({ url: req.originalUrl + ' not found' })
+// });
 
 app.get('/none', [setLoggedInUser, hasPaymentPlan('none')], async function (
   req,
   res,
   next
 ) {
-  res.status(200)
+  res.status(200).render('none.ejs')
 })
 
 app.get('/basic', [setLoggedInUser, hasPaymentPlan('basic')], async function (
@@ -61,7 +61,7 @@ app.get('/basic', [setLoggedInUser, hasPaymentPlan('basic')], async function (
   res,
   next
 ) {
-  res.status(200)
+  res.status(200).render('basic.ejs')
 })
 
 app.get('/premium', [setLoggedInUser, hasPaymentPlan('premium')], async function (
@@ -69,12 +69,11 @@ app.get('/premium', [setLoggedInUser, hasPaymentPlan('premium')], async function
   res,
   next
 ) {
-  res.status(200)
+  res.status(200).render('premium.ejs')
 })
 
 app.get('/', function (req, res) {
-  // res.render('login.ejs')
-  res.send('Login Page!');
+  res.render('login.ejs')
 })
 
 app.get('/account', async function (req, res) {
@@ -83,8 +82,7 @@ app.get('/account', async function (req, res) {
   if (!customer) {
     res.redirect('/')
   } else {
-    // res.render('account.ejs', { customer })
-    res.send('Account Page!');
+    res.render('account.ejs', { customer })
   }
 })
 
@@ -276,9 +274,6 @@ app.post('/webhook', async (req, res) => {
   res.sendStatus(200)
 })
 
-
 const port = process.env.PORT || 4242
 
-app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}!`);
-});
+app.listen(port, () => console.log(`Listening on port ${port}!`))

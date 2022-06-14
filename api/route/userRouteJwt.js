@@ -1,5 +1,5 @@
 module.exports = function(app) {
-    const userHandlers = require('../controllers/userController.js')
+    const userHandlers = require('../controllers/userControllerJwt.js')
 
     // Auth JWT Routes
     app.route('/tasks')
