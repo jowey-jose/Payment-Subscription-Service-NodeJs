@@ -6,6 +6,7 @@ const addUser = (User) => ({ email, billingID, plan, endDate }) => {
     return user.save()
   }
   
+  // Fetch All Users from DB
   const getUsers = (User) => () => {
     return User.find({})
   }

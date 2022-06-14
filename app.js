@@ -9,7 +9,6 @@ const UserService = require('./api/user')
 const Stripe = require('./api/connections/stripePaymentIntegration') // Initialize Stripe Integration
 const setLoggedInUser = require('./api/middleware/setLoggedInUser')
 const hasPaymentPlan = require('./api/middleware/hasPaymentPlan') // Check Payment Plan Associated with User.
-// const routes = require('./api/route/userRouteJwt') // JWT Auth
 
 const app = express();
 
@@ -41,13 +40,37 @@ const productToPriceMap = {
   premium: process.env.PREMIUM_PLAN
 }
 
-// Routes
-// routes(app)
+// Exposing API
+// Post API to add user to Database
+app.post("/register", async (req, res, next) => {
+  try {
+    const { email, billingID, plan, endDate  } = req.body;
+    const user = await saveUser({ email, billingID, plan, endDate  });   
+    res.json({
+      message: "Inserted Successfully",
+      user: user,
+    });
+  } catch (err) {
+    next(err);
+  }
+});
 
-// app.use(function(req, res) {
-//   res.status(404).send({ url: req.originalUrl + ' not found' })
-// });
+// Get API to get user by his billingID
+app.get("/:billingID", async (req, res, next) => {
+  try {
+    const { billingID } = req.params;
+    const user = await getUser({ billingID });   
+    res.json({
+      message: "Fetched Successfully",
+      user: user,
+    });
+  } catch (err) {
+    next(err);
+  }
+});
 
+
+// Front-End Integration
 app.get('/none', [setLoggedInUser, hasPaymentPlan('none')], async function (
   req,
   res,
