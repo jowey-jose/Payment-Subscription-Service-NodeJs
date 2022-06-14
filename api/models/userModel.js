@@ -5,6 +5,7 @@ const bcrypt = require('bcrypt')
 
 const Schema = mongoose.Schema
 
+//Schema
 const  userSchema = new Schema({
     fullName: {
         type: String,
@@ -18,13 +19,6 @@ const  userSchema = new Schema({
         trim: true,
         required: true
     },
-    hash_password: {
-        type: String
-    },
-    created: {
-        type: Date,
-        default: Date.now
-    },
     billingID: {
         type: String
     },
@@ -37,16 +31,23 @@ const  userSchema = new Schema({
     },
     endDate: {
         type: Date, default: null
-    }
+    },
+    hash_password: {
+        type: String
+    },
+    created: {
+        type: Date,
+        default: Date.now
+    },
 })
 
 userSchema.methods.comparePassword = function(password) {
     return bcrypt.compareSync(password, this.hash_password)
 };
 
-// const userModel = mongoose.model('User', userSchema, 'User')
+const userModel = mongoose.model('user', userSchema, 'user')
 
-// module.exports = userModel
+module.exports = userModel
 
-mongoose.model('User', UserSchema);
+// mongoose.model('User', UserSchema);
  
